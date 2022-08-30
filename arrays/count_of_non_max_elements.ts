@@ -43,3 +43,4 @@ console.log(countOfNonMaxElements(numbers));
 console.log(countOfNonMaxElements1(numbers));
 
 export {countOfNonMaxElements, countOfNonMaxElements1};
+

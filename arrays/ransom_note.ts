@@ -19,12 +19,6 @@ function canFormRansomNote(ransomNote: string, magazine: string): boolean {
             return false;
         }
     }
-    console.log(map);
-    for(let key in map) {
-        if(map.get(key as string)! > 0) {
-            return false;
-        }
-    }
     return true;
 }
 
