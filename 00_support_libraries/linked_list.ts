@@ -1,17 +1,27 @@
 class LLNode<T> {
-  value: T;
-  next: LLNode<T> | null;
-
-  constructor(value: T, next: LLNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+  constructor(public value: T, public next: LLNode<T> | null = null) {}
 }
 
 class LinkedList<T> {
     private head: LLNode<T> | null = null;
     private tail: LLNode<T> | null = null;
+    //it will be a good idea to maintain the size of the list also.
     
+    constructor(values: T[]) {
+        values.forEach(value => this.append(value));
+    }
+
+    public print(): void {
+        let currentNode: LLNode<T> | null = this.head;
+        console.log(`Here is the list`);
+        while (currentNode != null) {
+            console.log(currentNode.value);
+            currentNode = currentNode.next;
+        }
+
+        console.log(`Printing list is completed`);
+    }
+
     public append(value: T): void {
         const newNode = new LLNode(value);
     
@@ -116,3 +126,6 @@ class LinkedList<T> {
 		itr.next = temp;
 	};
 }
+
+const list = new LinkedList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+list.print();
