@@ -1,19 +1,5 @@
 //support functions
 class HashMap {
-    static getFreqMap<T>(iterable: Iterable<T>){
-        const hm = new Map<T, number>();
-    
-        for(const x of iterable) {
-            if(hm.has(x)) {
-                const freq: number = hm.get(x)!;
-                hm.set(x, freq+1);
-            } else {
-                hm.set(x, 1);
-            }
-        }
-    
-        return hm;
-    }
     static printMap(map: Map<any, any>) {
         console.log(`Here is the Map =================>`);
         for(const [key, value] of map.entries()) {

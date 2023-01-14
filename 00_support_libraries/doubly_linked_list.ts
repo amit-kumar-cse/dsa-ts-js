@@ -43,8 +43,10 @@ class DoublyLinkedList<T> {
         }
     }
 
-    public appendValues(values: T[]): void {
-        values.forEach(value => this.append(value));
+    public appendValues(itr: Iterable<T>): void {
+        for(const val of itr) {
+            this.append(val);
+        }
     }
 
     public get size() : number {
@@ -95,7 +97,7 @@ class DoublyLinkedList<T> {
         }
     }
 
-    public print(): void {
+    public printLineByLine(): void {
         let currentNode: DoublyLinkedListNode<T> | null = this.head;
         console.log(`Here is the list`);
         while (currentNode != null) {
@@ -104,6 +106,16 @@ class DoublyLinkedList<T> {
         }
 
         console.log(`Printing list is completed`);
+    }
+
+    public getValuesAsArray(): T[] {
+        const result: T[] = new Array<T>(this.size);
+        for (let currentNode: DoublyLinkedListNode<T> | null = this.head, i=0;
+                currentNode != null;
+                currentNode = currentNode!.next, i++) {
+            result[i] = currentNode.data;
+        }
+        return result;
     }
 }
 

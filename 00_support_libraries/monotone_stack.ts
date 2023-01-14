@@ -1,18 +1,17 @@
-class Stack<T> {
+class MonotoneStack<T> {
     private arr: T[];
     private top: number;
 
-    constructor(initialCapacity: number = 100) {
+    private readonly _comparator: (a: T, b: T) => boolean;
+
+    constructor(comparator: (a: T, b: T) => boolean, initialCapacity: number = 100) {
         this.arr = new Array<T>(initialCapacity);
         this.top = -1;
+        this._comparator = comparator;
     }
 
-    get isEmpty() : boolean {
+    isEmpty() : boolean {
         return this.top === -1;
-    }
-
-    get size(): number {
-        return this.top+1;
     }
 
     doubleSize() {
@@ -24,6 +23,9 @@ class Stack<T> {
     }
 
     push(val: T): void {
+        while(this._comparator(this.peek, val)) {
+            this.pop();
+        }
         if(this.top === this.arr.length-1) {
             this.doubleSize();
         }
@@ -32,10 +34,6 @@ class Stack<T> {
 
     get peek(): T {
         return this.arr[this.top];
-    }
-
-    clear(): void {
-        this.top = -1;
     }
 
     /**
@@ -68,10 +66,6 @@ class Stack<T> {
         }
     }
 
-    print() {
-        this.printTopDown();
-    }
-
     printTopDown() {
         console.log(`---------------------------------------------------------------`);
         console.log(`Here are the contents of the stack from topside: ========>`);
@@ -93,60 +87,8 @@ class Stack<T> {
         console.log(`Stack top side: ========>`);
         console.log(`---------------------------------------------------------------`);
     }
-
-    get getItemsAsArray(): T[] {
-        return this.arr.slice(0, this.top+1);
-    }
 }
 
-function evalRPN(tokens: string[]): number {
-    const stack = new Stack<number>();
-    const plusCharCode = '+'.charCodeAt(0);
-    const minusCharCode = '-'.charCodeAt(0);
-    const multiplyCharCode = '*'.charCodeAt(0);
-    const divideCharCode = '/'.charCodeAt(0);
-
-    let op1: number, op2: number;
-    for(const str of tokens) {
-        switch(str.charCodeAt(0)) {
-            case plusCharCode:
-                op2 = stack.pop();
-                op1 = stack.pop();
-                stack.push(op1+op2);
-                break;
-            case minusCharCode:
-                op2 = stack.pop();
-                op1 = stack.pop();
-                stack.push(op1-op2);
-                break;
-            case multiplyCharCode:
-                op2 = stack.pop();
-                op1 = stack.pop();
-                stack.push(op1*op2);
-                break;
-            case divideCharCode:
-                op2 = stack.pop();
-                op1 = stack.pop();
-                stack.push(Math.floor(op1/op2));
-                break;
-            default:
-                stack.push(parseInt(str));
-        }
-    }
-    return stack.peek();
-};
-
-// const tokens = ["2","1","+","3","*"];
-// const tokens = ["4","13","5","/","+"];
-const tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"];
-
-
-console.log(evalRPN(tokens));
-
-export default Stack;
-
-// const st = new Stack<number>();
-// st.append([1, 2, 3]);
-// st.printTopDown();
-// st.printBottomUp();
-
+const monotonicallyDecreasingStack = new MonotoneStack<number>((a, b) => a < b);
+monotonicallyDecreasingStack.append([2, 1]);
+monotonicallyDecreasingStack.printTopDown();
