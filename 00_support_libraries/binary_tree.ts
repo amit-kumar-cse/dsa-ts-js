@@ -1,4 +1,4 @@
-import Stack from "./stack";
+import Stack from "./stack_queue_ll/stack";
 
 class BTNode<T> {
     public data: T;

@@ -1,4 +1,4 @@
-import DoubleLinkedList from '../00_support_libraries/doubly_linked_list';
+import DoubleLinkedList from '../00_support_libraries/stack_queue_ll/doubly_linked_list';
 
 class MyQueue<T> {
     private doublyLinkedList: DoubleLinkedList<T>;

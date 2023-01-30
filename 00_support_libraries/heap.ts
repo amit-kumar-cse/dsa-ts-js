@@ -1,10 +1,20 @@
 class Heap<T> {
-    private readonly _heap: T[];
-    private readonly _comparator: (a: T, b: T) => boolean;
-    constructor(comparator: (a: T, b: T) => boolean) {
+    private _heap: T[];
+    private readonly _comparator: (a: T, b: T) => number;
+    constructor(comparator: (a: T, b: T) => number) {
         this._heap = [];
         this._comparator = comparator;
     }
+
+    fillWithValues(vals: T[]): void {
+        this._heap = vals;
+        let i = Math.floor((this.size-2)/2);
+        while(i >= 0) {
+            this._siftDown(i);
+            i--;
+        }
+    }
+
     get size(): number {
         return this._heap.length;
     }
@@ -18,12 +28,12 @@ class Heap<T> {
             return this._heap[0];
         }
     }
-    insert(value: T) {
+    insert(value: T): void {
         this._heap.push(value);
-        this._siftUp();
+        this._siftUpLast();
     }
 
-    insertValues(values: Iterable<T>) {
+    insertValues(values: Iterable<T>): void {
         for(const value of values) {
             this.insert(value);
         }
@@ -37,16 +47,20 @@ class Heap<T> {
             const last = this._heap.pop()!;
             if(this.size > 0) {
                 this._heap[0] = last;
-                this._siftDown();
+                this._siftDownRoot();
             }
             return value;
         }
     }
-    private _siftUp() {
-        let index = this.size - 1;
+
+    private _siftUpLast(): void {
+        this._siftUp(this.size-1);
+    }
+
+    private _siftUp(index: number): void {
         while(index > 0) {
             const parentIndex = Math.floor((index - 1) / 2);
-            if(this._comparator(this._heap[index], this._heap[parentIndex])) {
+            if(this._comparator(this._heap[index] , this._heap[parentIndex]) < 0) {
                 this._swap(index, parentIndex);
                 index = parentIndex;
             } else {
@@ -54,16 +68,19 @@ class Heap<T> {
             }
         }
     }
-    private _siftDown() {
-        let index = 0;
+
+    private _siftDownRoot(): void {
+        this._siftDown(0);
+    }
+    private _siftDown(index: number): void {
         while(index < this.size) {
             const leftChildIndex = 2 * index + 1;
             const rightChildIndex = 2 * index + 2;
             let nextIndex = index;
-            if(leftChildIndex < this.size && this._comparator(this._heap[leftChildIndex], this._heap[nextIndex])) {
+            if(leftChildIndex < this.size && this._comparator(this._heap[leftChildIndex], this._heap[nextIndex]) < 0) {
                 nextIndex = leftChildIndex;
             }
-            if(rightChildIndex < this.size && this._comparator(this._heap[rightChildIndex], this._heap[nextIndex])) {
+            if(rightChildIndex < this.size && this._comparator(this._heap[rightChildIndex], this._heap[nextIndex]) < 0) {
                 nextIndex = rightChildIndex;
             }
             if(nextIndex !== index) {
@@ -74,27 +91,48 @@ class Heap<T> {
             }
         }
     }
-    private _swap(index1: number, index2: number) {
+    private _swap(index1: number, index2: number): void {
         const temp = this._heap[index1];
         this._heap[index1] = this._heap[index2];
         this._heap[index2] = temp;
     }
 
-    public printHeap() {
-        console.log(this._heap);
+    public print(name: string, sorted: boolean = true): void {
+        console.log(`starting to print heap: ${name}  ---------->>>>>>>>>`);
+        console.log(this.values(sorted));
+        console.log(`ending to print heap: ${name}     ----------<<<<<<<<<<<<<<`);
     }
 
-    get values(): T[] {
-        return this._heap;
+    values(sorted: boolean = false): T[] {
+        if(sorted === false) {
+            return [...this._heap];
+        } else {
+            const ans: T[] = [];
+            const copy = this.deepCopy();
+            while(!copy.isEmpty) {
+                ans.push(copy.remove()!);
+            }
+            // console.log(ans);
+            return ans;
+        }
+
+    }
+
+    deepCopy(): Heap<T> {
+        const heap = new Heap<T>(this._comparator);
+        heap.fillWithValues([...this._heap]);
+        return heap;
     }
 }
 //heap class
 
-const minHeap = new Heap<number>((a, b) => a < b);
+const minHeap = new Heap<number>((a, b) => a - b);
 minHeap.insertValues([5, 3, 7, 1, 9, 2, 8, 4, 6]);
-minHeap.printHeap();
+minHeap.print('minHeap', true);
 
-const maxHeap = new Heap<number>((a, b) => a > b);
+const maxHeap = new Heap<number>((a, b) => b - a);
 maxHeap.insertValues([5, 3, 7, 1, 9, 2, 8, 4, 6, 6]);
-maxHeap.printHeap();
+maxHeap.print('maxHeap', true);
+
+export { Heap };
 

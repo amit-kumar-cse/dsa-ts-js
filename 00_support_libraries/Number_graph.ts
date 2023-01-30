@@ -1,4 +1,4 @@
-import MyQueue from "./myQueue";
+import MyQueue from "./stack_queue_ll/myQueue";
 
 class NumberGraph {
     private n: number;
